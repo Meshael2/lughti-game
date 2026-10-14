@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="رحلتنا مع لغتي">
+  <meta name="theme-color" content="#4aaef2">
+  <title>رحلتنا مع لغتي – مغامرة الطائرة التعليمية</title>
+  <meta name="description" content="لعبة تعليمية للوحدة الأولى (التعامل مع الآخرين) من كتاب لغتي – الصف الثالث الابتدائي">
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" class="on-splash">
+
+  <!-- ================= الشريط العلوي ================= -->
+  <header id="topbar">
+    <button class="tb-btn tb-home" id="btn-back-plane" title="العودة إلى الطائرة" aria-label="العودة إلى الطائرة">
+      <span class="ico">✈️</span><span class="lbl">العودة إلى الطائرة</span>
+    </button>
+    <div id="minimap-wrap" title="خريطة الطائرة: انقر أي قسم للانتقال إليه"></div>
+    <div id="scoreboard" aria-live="polite"></div>
+    <div class="tb-tools">
+      <button class="tb-icon" id="btn-switch-turn" title="تبديل الدور بين الفريقين" aria-label="تبديل الدور">🔄</button>
+      <button class="tb-icon" id="btn-sound" title="الصوت" aria-label="تشغيل أو إيقاف الصوت">🔊</button>
+      <button class="tb-icon" id="btn-fullscreen" title="ملء الشاشة" aria-label="ملء الشاشة">⛶</button>
+      <button class="tb-icon tb-secret" id="btn-teacher" title="لوحة تحكم المعلم" aria-label="لوحة تحكم المعلم">⚙️</button>
+    </div>
+  </header>
+
+  <main id="stage">
+
+    <!-- ================= شاشة البداية ================= -->
+    <section id="scr-splash" class="screen active" aria-label="شاشة البداية">
+      <div class="sky">
+        <div class="sun"></div>
+        <div class="clouds far"></div>
+        <div class="clouds near"></div>
+      </div>
+      <div class="splash-content">
+        <div class="splash-badge">لغتي • الصف الثالث الابتدائي • الوحدة الأولى</div>
+        <h1 class="splash-title">رحلتنا مع لغتي</h1>
+        <p class="splash-sub">مغامرة الطائرة التعليمية – التعامل مع الآخرين</p>
+        <div class="splash-plane" id="splash-plane"></div>
+        <p class="splash-welcome">أهلًا بك أيها المسافر المبدع!</p>
+        <button class="btn-big btn-start" id="btn-start"><span>✈️</span> ابدأ الرحلة</button>
+        <p class="splash-hint">افتح الملف بالنقر المزدوج على index.html • تعمل اللعبة كاملة دون إنترنت</p>
+      </div>
+    </section>
+
+    <!-- ================= خريطة الطائرة (المقطع الداخلي) ================= -->
+    <section id="scr-cabin" class="screen" aria-label="خريطة الطائرة">
+      <div class="sky"><div class="clouds far"></div><div class="clouds near"></div></div>
+      <div class="cabin-head">
+        <h2>اختر قسمًا من أقسام الطائرة لتبدأ اللعب 👇</h2>
+        <p>تنقّل بحرية بين الأقسام بالترتيب الذي تريده</p>
+      </div>
+      <div class="camera-viewport" id="camera-viewport">
+        <div class="camera" id="camera"></div>
+      </div>
+    </section>
+
+    <!-- ================= 1) قمرة القيادة ================= -->
+    <section id="scr-cockpit" class="screen game-screen" aria-label="قمرة القيادة">
+      <div class="cockpit-window"><div class="clouds far"></div><div class="clouds near"></div></div>
+      <div class="cockpit-grid">
+        <div class="cp-pilot">
+          <div class="speech" id="pilot-speech">السلام عليكم يا أبطال! أنا قائد طائرتكم، أهلًا بكم في رحلتنا مع لغتي. اربطوا الأحزمة واستعدوا للانطلاق!</div>
+          <div class="pilot-holder" id="pilot-holder"></div>
+        </div>
+        <div class="cp-center">
+          <div class="flight-screen">
+            <div class="fs-head"><span class="fs-led"></span> شاشة الرحلة <span class="fs-route">الرياض ✈ مطار النجوم</span></div>
+            <div class="fs-route-line" id="fs-route"></div>
+          </div>
+          <div class="cp-panels">
+            <div class="panel">
+              <h3>🎮 طريقة اللعب</h3>
+              <div class="mode-toggle" role="radiogroup" aria-label="طريقة اللعب">
+                <button class="mode-btn" data-mode="solo" role="radio">👤 لعب فردي</button>
+                <button class="mode-btn" data-mode="teams" role="radio">👥 فريقان</button>
+              </div>
+              <div class="team-names" id="cp-team-names">
+                <label class="tn tn-blue"><span>الفريق الأول</span><input id="cp-name-0" maxlength="24"></label>
+                <label class="tn tn-orange"><span>الفريق الثاني</span><input id="cp-name-1" maxlength="24"></label>
+              </div>
+            </div>
+            <div class="panel panel-howto">
+              <h3>📋 التعليمات</h3>
+              <ol>
+                <li>اختر أي قسم من أقسام الطائرة؛ لا يلزم ترتيب.</li>
+                <li>الفريق صاحب الدور يظهر مضيئًا أعلى الشاشة.</li>
+                <li>الإجابة الصحيحة تمنح نقاطًا، وكل ٥٠ نقطة نجمة ⭐.</li>
+                <li>أكمل أي لعبة لتحصل على وسامها 🏅.</li>
+                <li>في بوابة الوصول تدور عجلة التحدي الذهبي، ثم تهبط الطائرة!</li>
+              </ol>
+            </div>
+          </div>
+          <div class="cp-buttons" id="cp-buttons"></div>
+        </div>
+      </div>
+      <div class="dashboard"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    </section>
+
+    <!-- ================= 2) الدرجة الأولى: البطاقات ================= -->
+    <section id="scr-cards" class="screen game-screen" aria-label="بطاقات المسافر الذكي">
+      <div class="game-head">
+        <div class="gh-title"><span class="gh-ico">🎴</span><div><h2>بطاقات المسافر الذكي</h2><p>الدرجة الأولى • انقر البطاقة لتنقلب وتظهر الإجابة</p></div></div>
+        <div class="chips" id="cards-filter"></div>
+      </div>
+      <div class="cards-stage">
+        <button class="nav-arrow" id="card-prev" aria-label="البطاقة السابقة">❯</button>
+        <div class="flip-scene" id="flip-scene">
+          <div class="flip-card" id="flip-card" tabindex="0" role="button" aria-label="اقلب البطاقة">
+            <div class="flip-face flip-front"><span class="fc-type" id="fc-type"></span><div class="fc-text" id="fc-front"></div><span class="fc-tap">👆 انقر لقلب البطاقة</span></div>
+            <div class="flip-face flip-back"><span class="fc-type">الإجابة</span><div class="fc-text" id="fc-back"></div><span class="fc-src" id="fc-src"></span></div>
+          </div>
+        </div>
+        <button class="nav-arrow" id="card-next" aria-label="البطاقة التالية">❮</button>
+      </div>
+      <div class="cards-foot">
+        <div class="cards-count" id="cards-count"></div>
+        <div class="cards-actions">
+          <button class="btn-big btn-green" id="card-know" disabled>✔ عرفت الإجابة</button>
+          <button class="btn-big btn-amber" id="card-again" disabled>↺ حاول مرة أخرى</button>
+        </div>
+        <div class="cards-known" id="cards-known"></div>
+      </div>
+    </section>
+
+    <!-- ================= 3) مقاعد الركاب: تحدي الركاب ================= -->
+    <section id="scr-quiz" class="screen game-screen" aria-label="تحدي الركاب">
+      <div class="game-head">
+        <div class="gh-title"><span class="gh-ico">💺</span><div><h2>تحدي الركاب</h2><p>مقاعد الركاب • اختر الإجابة الصحيحة من أربعة اختيارات</p></div></div>
+        <div class="gh-side" id="quiz-progress"></div>
+      </div>
+      <div class="quiz-body" id="quiz-body"></div>
+    </section>
+
+    <!-- ================= 4) قسم الأمتعة: حقيبة الكلمات ================= -->
+    <section id="scr-bags" class="screen game-screen" aria-label="حقيبة الكلمات">
+      <div class="game-head">
+        <div class="gh-title"><span class="gh-ico">🧳</span><div><h2>حقيبة الكلمات</h2><p>قسم الأمتعة • اسحب وأفلت، أو انقر العنصر ثم انقر مكانه</p></div></div>
+        <div class="gh-side"><button class="btn-small" id="bags-list-btn">🗂️ قائمة الأنشطة</button></div>
+      </div>
+      <div class="bags-body" id="bags-body"></div>
+    </section>
+
+    <!-- ================= 5) الجناح: السرعة والنجوم ================= -->
+    <section id="scr-speed" class="screen game-screen" aria-label="السرعة والنجوم">
+      <div class="speed-sky"><div class="clouds far"></div><div class="clouds near"></div><div class="speed-lines"></div><div class="speed-plane" id="speed-plane"></div></div>
+      <div class="game-head">
+        <div class="gh-title"><span class="gh-ico">⚡</span><div><h2>السرعة والنجوم</h2><p>جناح الطائرة • أجب بسرعة لتحصل على نقاط إضافية</p></div></div>
+        <div class="gh-side speed-stats" id="speed-stats"></div>
+      </div>
+      <div class="speed-body" id="speed-body"></div>
+    </section>
+
+    <!-- ================= 6) بوابة الوصول: عجلة التحدي الذهبي ================= -->
+    <section id="scr-wheel" class="screen game-screen" aria-label="الوصول إلى النجومية">
+      <div class="game-head">
+        <div class="gh-title"><span class="gh-ico">🛬</span><div><h2>الوصول إلى النجومية</h2><p>بوابة الوصول • أدِر عجلة التحدي الذهبي</p></div></div>
+        <div class="gh-side" id="wheel-status"></div>
+      </div>
+      <div class="wheel-body">
+        <div class="wheel-wrap">
+          <div class="wheel-pointer">▼</div>
+          <div class="wheel-rot" id="wheel-rot"></div>
+          <button class="wheel-center" id="wheel-spin" aria-label="أدر العجلة">أدِر</button>
+        </div>
+        <div class="wheel-side">
+          <div class="wheel-legend" id="wheel-legend"></div>
+          <button class="btn-big btn-gold" id="wheel-spin2">🎡 أدِر العجلة</button>
+          <button class="btn-big btn-blue" id="btn-land">🛬 الهبوط في المطار</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= الهبوط ================= -->
+    <section id="scr-landing" class="screen" aria-label="هبوط الطائرة">
+      <div class="landing-scene" id="landing-scene"></div>
+      <div class="landing-plane" id="landing-plane"></div>
+      <div class="landing-msg" id="landing-msg">حمدًا لله على السلامة! وصلنا مطار النجوم 🎉</div>
+      <button class="btn-small landing-skip" id="landing-skip">تخطي ⏭</button>
+    </section>
+
+    <!-- ================= شاشة الفوز ================= -->
+    <section id="scr-win" class="screen" aria-label="الاحتفال بالفائز">
+      <div class="sky"><div class="clouds far"></div></div>
+      <div class="win-content">
+        <h2 class="win-title" id="win-title">🏆 الفريق الفائز</h2>
+        <div class="podium" id="podium"></div>
+        <div class="win-actions">
+          <button class="btn-big btn-gold" id="btn-cert">📜 شهادة «قائد الرحلة المبدع»</button>
+          <button class="btn-big btn-blue" id="btn-win-plane">✈️ العودة إلى الطائرة</button>
+          <button class="btn-big btn-green" id="btn-new-trip">🔁 رحلة جديدة</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- أبواب الانتقال -->
+  <div id="doors" aria-hidden="true"><div class="door door-r"><span></span></div><div class="door door-l"><span></span></div><div class="door-badge" id="door-badge"></div></div>
+
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="float-layer" aria-hidden="true"></div>
+
+  <!-- ================= نافذة عامة ================= -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-box" id="modal-box"></div>
+  </div>
+
+  <!-- ================= لوحة تحكم المعلم ================= -->
+  <div class="modal" id="teacher" role="dialog" aria-modal="true" aria-label="لوحة تحكم المعلم">
+    <div class="modal-box teacher-box">
+      <div class="tp-head"><h2>⚙️ لوحة تحكم المعلم</h2><button class="x-btn" data-close="teacher" aria-label="إغلاق">✕</button></div>
+      <div class="tp-grid">
+        <fieldset><legend>🎮 الانتقال المباشر إلى لعبة</legend><div class="tp-games" id="tp-games"></div></fieldset>
+        <fieldset><legend>❓ الأسئلة</legend>
+          <label>عدد أسئلة «تحدي الركاب» <select id="tp-quiz-count"></select></label>
+          <label>عدد أسئلة «السرعة والنجوم» <select id="tp-speed-count"></select></label>
+          <label>مستوى الصعوبة <select id="tp-level"><option value="mixed">مختلط</option><option value="easy">سهل</option><option value="medium">متوسط</option><option value="hard">صعب</option></select></label>
+          <label>عدد دورات العجلة <select id="tp-spins"></select></label>
+        </fieldset>
+        <fieldset><legend>⏱️ المؤقت والدور</legend>
+          <label class="sw"><input type="checkbox" id="tp-timer"> تشغيل المؤقت في «تحدي الركاب»</label>
+          <label>زمن السؤال في «تحدي الركاب» <select id="tp-quiz-time"></select></label>
+          <label>زمن السؤال في «السرعة والنجوم» <select id="tp-speed-time"></select></label>
+          <label class="sw"><input type="checkbox" id="tp-autoswitch"> تبديل الدور تلقائيًا بعد كل سؤال</label>
+          <label class="sw"><input type="checkbox" id="tp-show-answers"> إظهار الإجابة الصحيحة للمعلم (نجمة صغيرة ⭐)</label>
+        </fieldset>
+        <fieldset><legend>🔊 الصوت والعرض</legend>
+          <label class="sw"><input type="checkbox" id="tp-sound"> تشغيل الأصوات</label>
+          <label>مستوى الصوت <input type="range" id="tp-volume" min="0" max="1" step="0.1"></label>
+          <button class="btn-small" id="tp-test-sound">🔔 تجربة الصوت</button>
+          <button class="btn-small" id="tp-fullscreen">⛶ ملء الشاشة</button>
+        </fieldset>
+        <fieldset class="tp-wide"><legend>👥 الفرق والنقاط</legend>
+          <div class="tp-teams" id="tp-teams"></div>
+        </fieldset>
+        <fieldset class="tp-wide"><legend>🛠️ أدوات</legend>
+          <div class="tp-tools">
+            <button class="btn-small" id="tp-answers">📖 عرض الإجابات الصحيحة</button>
+            <button class="btn-small" id="tp-land">🛬 الهبوط وإعلان الفائز</button>
+            <button class="btn-small btn-danger" id="tp-reset-scores">↺ تصفير النقاط</button>
+            <button class="btn-small btn-danger" id="tp-reset-all">🗑️ إعادة ضبط اللعبة كاملة</button>
+          </div>
+          <p class="tp-note">لتعديل الأسئلة مستقبلًا: افتح الملف <b>data.js</b> بالمفكرة، وعدّل النصوص ثم احفظه وأعد فتح اللعبة. توجد تعليمات مفصّلة في أعلى الملف وفي <b>README.txt</b>.</p>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+
+  <!-- منطقة الطباعة (الشهادة) -->
+  <div id="print-area"></div>
+</div>
+
+<!-- ملفات JavaScript عادية (ليست وحدات Modules) لتعمل عبر file:// -->
+<script src="data.js"></script>
+<script src="js/art.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
