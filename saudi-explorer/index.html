@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>مغامرة المستكشف السعودي – ربوع من بلادي</title>
+  <meta name="description" content="لعبة تعليمية للوحدة الثانية (ربوع من بلادي) من كتاب لغتي – الصف الثالث الابتدائي">
+  <meta name="theme-color" content="#1f8a4c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="المستكشف السعودي">
+  <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+  <link rel="icon" type="image/png" href="assets/icons/icon-192.png">
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" class="on-splash">
+
+  <!-- ============ الشريط العلوي ============ -->
+  <header id="topbar">
+    <button class="tb-btn" id="btn-map" aria-label="العودة إلى الخريطة"><span class="ico">🗺️</span><span class="lbl">الخريطة</span></button>
+    <button class="tb-btn tb-passport" id="btn-passport" aria-label="عرض جواز السفر"><span class="ico">🛂</span><span class="lbl">جواز السفر</span></button>
+    <div id="scoreboard" aria-live="polite"></div>
+    <div class="tb-tools">
+      <button class="tb-icon" id="btn-switch" title="تبديل الدور" aria-label="تبديل الدور">🔄</button>
+      <button class="tb-icon" id="btn-sound" title="الصوت" aria-label="تشغيل أو إيقاف الصوت">🔊</button>
+      <button class="tb-icon" id="btn-full" title="ملء الشاشة" aria-label="ملء الشاشة">⛶</button>
+      <button class="tb-icon" id="btn-teacher" title="لوحة المعلم" aria-label="لوحة تحكم المعلم">⚙️</button>
+    </div>
+  </header>
+
+  <main id="stage">
+
+    <!-- ============ شاشة البداية ============ -->
+    <section id="scr-splash" class="screen active">
+      <div class="sky"><div class="sun"></div><div class="clouds"></div><div class="twinkles"></div></div>
+      <div class="splash-grid">
+        <div class="splash-text">
+          <div class="badge">لغتي • الصف الثالث • الوحدة الثانية: ربوع من بلادي</div>
+          <h1 class="title">مغامرة<br><span>المستكشف السعودي</span></h1>
+          <p class="subtitle">رحلة في ربوع بلادي</p>
+          <p class="welcome">هيا نكتشف ربوع بلادنا الجميلة!</p>
+          <button class="btn-big btn-start" id="btn-start">🧭 ابدأ المغامرة</button>
+        </div>
+        <div class="splash-art">
+          <div class="mini-map" id="splash-map"></div>
+          <div class="splash-hero" id="splash-hero"></div>
+          <div class="splash-props"><span class="prop prop-bag">🧳</span><span class="prop prop-compass">🧭</span><span class="prop prop-pass">🛂</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ الإعداد ============ -->
+    <section id="scr-setup" class="screen">
+      <div class="sky"><div class="clouds"></div></div>
+      <div class="setup-card">
+        <h2>🛂 جهّز جواز سفرك أيها المستكشف</h2>
+        <div class="setup-block">
+          <h3>اختر شخصيتك</h3>
+          <div class="avatar-pick">
+            <button class="avatar-btn" data-av="boy"><span class="av" id="av-boy"></span>مستكشف</button>
+            <button class="avatar-btn" data-av="girl"><span class="av" id="av-girl"></span>مستكشفة</button>
+          </div>
+        </div>
+        <div class="setup-block">
+          <h3>طريقة اللعب</h3>
+          <div class="mode-pick">
+            <button class="mode-btn" data-mode="solo">👤 لعب فردي</button>
+            <button class="mode-btn" data-mode="teams">👥 فريقان</button>
+          </div>
+          <div class="names">
+            <label class="nm nm-0"><span id="lbl-name-0">اسم الفريق الأول</span><input id="name-0" maxlength="24" autocomplete="off"></label>
+            <label class="nm nm-1"><span>اسم الفريق الثاني</span><input id="name-1" maxlength="24" autocomplete="off"></label>
+          </div>
+        </div>
+        <button class="btn-big btn-green" id="btn-go-map">🗺️ انطلق إلى الخريطة</button>
+      </div>
+    </section>
+
+    <!-- ============ الخريطة ============ -->
+    <section id="scr-map" class="screen">
+      <div class="map-sky"></div>
+      <div class="map-head">
+        <h2>اختر محطة من خريطة المملكة 👇</h2>
+        <p>يمكنك زيارة المحطات بأي ترتيب • اجمع الأختام الخمسة في جواز سفرك</p>
+      </div>
+      <div class="map-viewport" id="map-viewport">
+        <div class="map-camera" id="map-camera"><div class="map-plane" id="map-plane"></div></div>
+      </div>
+      <div class="map-legend" id="map-legend"></div>
+    </section>
+
+    <!-- ============ ١ الرياض: أسرار الرياض ============ -->
+    <section id="scr-riyadh" class="screen station-screen" data-st="riyadh">
+      <div class="scene" data-scene="riyadh"></div>
+      <div class="st-head">
+        <div class="st-title"><span class="st-ico">🏰</span><div><h2>أسرار الرياض</h2><p>المحطة الأولى • الرياض • انقر البطاقة لتنقلب</p></div></div>
+        <div class="chips" id="cards-filter"></div>
+      </div>
+      <div class="cards-stage">
+        <button class="nav-arrow" id="card-prev" aria-label="السابقة">❯</button>
+        <div class="flip-scene"><div class="flip-card" id="flip-card" tabindex="0" role="button" aria-label="اقلب البطاقة">
+          <div class="flip-face flip-front"><span class="fc-type" id="fc-type"></span><div class="fc-text" id="fc-front"></div><span class="fc-tap">👆 انقر لقلب البطاقة</span></div>
+          <div class="flip-face flip-back"><span class="fc-type">الإجابة</span><div class="fc-text" id="fc-back"></div><span class="fc-src" id="fc-src"></span></div>
+        </div></div>
+        <button class="nav-arrow" id="card-next" aria-label="التالية">❮</button>
+      </div>
+      <div class="cards-foot">
+        <div class="pill" id="cards-count"></div>
+        <div class="row-btns">
+          <button class="btn-big btn-green" id="card-know" disabled>✔ عرفت</button>
+          <button class="btn-big btn-amber" id="card-again" disabled>↺ أحتاج محاولة أخرى</button>
+        </div>
+        <div class="pill" id="cards-known"></div>
+      </div>
+    </section>
+
+    <!-- ============ ٢ الطائف: تحدي المصايف ============ -->
+    <section id="scr-taif" class="screen station-screen" data-st="taif">
+      <div class="scene" data-scene="taif"></div>
+      <div class="st-head">
+        <div class="st-title"><span class="st-ico">⛰️</span><div><h2>تحدي المصايف</h2><p>المحطة الثانية • الطائف • اختر الإجابة الصحيحة</p></div></div>
+        <div class="st-side" id="quiz-progress"></div>
+      </div>
+      <div class="game-body" id="quiz-body"></div>
+    </section>
+
+    <!-- ============ ٣ عسير: وادي الكلمات ============ -->
+    <section id="scr-asir" class="screen station-screen" data-st="asir">
+      <div class="scene" data-scene="asir"></div>
+      <div class="st-head">
+        <div class="st-title"><span class="st-ico">🌿</span><div><h2>وادي الكلمات</h2><p>المحطة الثالثة • عسير • اسحب وأفلت، أو المس الكلمة ثم مكانها</p></div></div>
+        <div class="st-side"><button class="btn-small" id="bags-list-btn">🗂️ قائمة الأنشطة</button></div>
+      </div>
+      <div class="game-body" id="bags-body"></div>
+    </section>
+
+    <!-- ============ ٤ جازان: السباق الذهبي ============ -->
+    <section id="scr-jazan" class="screen station-screen" data-st="jazan">
+      <div class="scene" data-scene="jazan"></div>
+      <div class="st-head">
+        <div class="st-title"><span class="st-ico">🏁</span><div><h2>السباق الذهبي</h2><p>المحطة الرابعة • جازان • أجب بسرعة ليتقدم المستكشف</p></div></div>
+        <div class="st-side" id="race-stats"></div>
+      </div>
+      <div class="race-track" id="race-track"><div class="race-flag">🏁</div><div class="race-runner" id="race-runner"></div><div class="race-fill" id="race-fill"></div></div>
+      <div class="game-body" id="race-body"></div>
+    </section>
+
+    <!-- ============ ٥ نجران: كنز ربوع بلادي ============ -->
+    <section id="scr-najran" class="screen station-screen" data-st="najran">
+      <div class="scene" data-scene="najran"></div>
+      <div class="st-head">
+        <div class="st-title"><span class="st-ico">💰</span><div><h2>كنز ربوع بلادي</h2><p>المحطة الخامسة • نجران • أدر عجلة التحديات</p></div></div>
+        <div class="st-side" id="wheel-status"></div>
+      </div>
+      <div class="wheel-body">
+        <div class="wheel-wrap">
+          <div class="wheel-pointer">▼</div>
+          <div class="wheel-rot" id="wheel-rot"></div>
+          <button class="wheel-center" id="wheel-spin" aria-label="أدر العجلة">أدِر</button>
+        </div>
+        <div class="wheel-side">
+          <div class="chest-box" id="chest-box"></div>
+          <div class="wheel-legend" id="wheel-legend"></div>
+          <button class="btn-big btn-gold" id="wheel-spin2">🎡 أدر العجلة</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ الفوز ============ -->
+    <section id="scr-win" class="screen">
+      <div class="sky"><div class="clouds"></div><div class="twinkles"></div></div>
+      <div class="win-content">
+        <div class="win-chest" id="win-chest"></div>
+        <h2 class="win-title" id="win-title">🏆 مستكشف ربوع بلادي</h2>
+        <p class="win-sub" id="win-sub"></p>
+        <div class="podium" id="podium"></div>
+        <div class="row-btns">
+          <button class="btn-big btn-gold" id="btn-win-pass">🛂 جواز السفر</button>
+          <button class="btn-big btn-blue" id="btn-win-map">🗺️ الخريطة</button>
+          <button class="btn-big btn-green" id="btn-new">🔁 مغامرة جديدة</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- انتقال -->
+  <div id="transition" aria-hidden="true"><div class="tr-card" id="tr-card"></div></div>
+
+  <!-- ختم متحرك -->
+  <div id="stamp-fx" aria-hidden="true"><div class="stamp-fx-inner" id="stamp-fx-inner"></div></div>
+
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="float-layer" aria-hidden="true"></div>
+
+  <!-- نافذة عامة -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="modal-box" id="modal-box"></div></div>
+
+  <!-- جواز السفر -->
+  <div class="modal" id="passport" role="dialog" aria-modal="true" aria-label="جواز سفر المستكشف">
+    <div class="passport-book">
+      <button class="x-btn pass-x" data-close="passport" aria-label="إغلاق">✕</button>
+      <div class="pass-page pass-id" id="pass-id"></div>
+      <div class="pass-page pass-stamps" id="pass-stamps"></div>
+    </div>
+  </div>
+
+  <!-- لوحة المعلم -->
+  <div class="modal" id="teacher" role="dialog" aria-modal="true" aria-label="لوحة تحكم المعلم">
+    <div class="modal-box teacher-box">
+      <div class="tp-head"><h2>⚙️ لوحة تحكم المعلم</h2><button class="x-btn" data-close="teacher" aria-label="إغلاق">✕</button></div>
+      <div class="tp-grid">
+        <fieldset><legend>🗺️ اختيار المحطة</legend><div class="tp-go" id="tp-go"></div></fieldset>
+        <fieldset><legend>❓ الأسئلة والصعوبة</legend>
+          <label>عدد أسئلة «تحدي المصايف» <select id="tp-qcount"></select></label>
+          <label>عدد أسئلة «السباق الذهبي» <select id="tp-rcount"></select></label>
+          <label>مستوى الصعوبة <select id="tp-level"><option value="mixed">مختلط</option><option value="easy">سهل</option><option value="medium">متوسط</option><option value="hard">صعب</option></select></label>
+          <label>عدد دورات العجلة <select id="tp-spins"></select></label>
+        </fieldset>
+        <fieldset><legend>⏱️ المؤقت</legend>
+          <label class="sw"><input type="checkbox" id="tp-timer"> مؤقت «تحدي المصايف»</label>
+          <label>زمن سؤال «تحدي المصايف» <select id="tp-qtime"></select></label>
+          <label>زمن سؤال «السباق الذهبي» <select id="tp-rtime"></select></label>
+        </fieldset>
+        <fieldset><legend>🎯 التحكم بالسؤال الحالي</legend>
+          <div class="tp-tools">
+            <button class="btn-small" id="tp-reveal">👁️ عرض الإجابة الصحيحة</button>
+            <button class="btn-small" id="tp-skip">⏭ تخطي السؤال</button>
+            <button class="btn-small" id="tp-repeat">↺ إعادة السؤال</button>
+          </div>
+          <label class="sw"><input type="checkbox" id="tp-autoswitch"> تبديل الدور تلقائيًا بعد كل سؤال</label>
+          <label class="sw"><input type="checkbox" id="tp-hintstar"> نجمة صغيرة على الإجابة الصحيحة (للمعلم)</label>
+        </fieldset>
+        <fieldset class="tp-wide"><legend>👥 الفرق والنقاط</legend><div class="tp-teams" id="tp-teams"></div></fieldset>
+        <fieldset><legend>🔊 الصوت والعرض</legend>
+          <label class="sw"><input type="checkbox" id="tp-sound"> تشغيل الأصوات</label>
+          <label>مستوى الصوت <input type="range" id="tp-volume" min="0" max="1" step="0.1"></label>
+          <div class="tp-tools"><button class="btn-small" id="tp-test">🔔 تجربة الصوت</button><button class="btn-small" id="tp-full">⛶ ملء الشاشة</button></div>
+        </fieldset>
+        <fieldset><legend>🛠️ أدوات</legend>
+          <div class="tp-tools">
+            <button class="btn-small" id="tp-key">📖 مفتاح الإجابات</button>
+            <button class="btn-small" id="tp-win">🏆 شاشة الفوز</button>
+            <button class="btn-small btn-danger" id="tp-reset-scores">↺ تصفير النقاط</button>
+            <button class="btn-small btn-danger" id="tp-reset">🗑️ إعادة ضبط المغامرة</button>
+          </div>
+          <p class="tp-note" id="tp-storage-note"></p>
+        </fieldset>
+        <fieldset class="tp-wide"><legend>✏️ تعديل بنك الأسئلة</legend>
+          <p class="tp-note">جميع الأسئلة في الملف <b>data.js</b> داخل مجلد اللعبة. افتحه بالمفكرة وعدّل النصوص بين علامتي التنصيص، ثم احفظه وأعد فتح اللعبة. لا حاجة لتعديل أي ملف آخر. التفاصيل في <b>README.txt</b>.</p>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ملفات JavaScript عادية (ليست Modules) لتعمل عبر file:// -->
+<script src="data.js"></script>
+<script src="js/map-data.js"></script>
+<script src="js/art.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
